@@ -1,0 +1,13 @@
+rpg_game
+*.o
+*.exe
+*.out
+
+gram.tab.c
+gram.tab.h
+lex.yy.c
+
+.DS_Store
+Thumbs.db
+
+input.txt
