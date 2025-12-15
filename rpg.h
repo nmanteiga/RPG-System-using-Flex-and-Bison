@@ -8,7 +8,9 @@ typedef struct {
     int hp;
     int damage;
     int speed;
-    char* ability;  
+
+    int defending;     
+    int cooldown;        
 } Character;
 
 #endif
