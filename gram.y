@@ -22,11 +22,13 @@ int spd_cnt = 0;
 extern FILE *yyin;
 void yyerror(const char *s);
 int yylex();
+void yyrestart(FILE *input_file);
 
 const char* VALID_ROLES[] = { "mage", "knight", "thief" };
 Character* current_char();
 
 Character* get_char(char* name);
+Character* get_opponent(char* name);
 void slow_print(const char *format, ...);
 int play_escape_roulette(int success_chance);
 void handle_flee(char* name);
@@ -114,8 +116,8 @@ character: T_ID LBRACE attribute_list RBRACE
             current->speed = (rand() % 20) + 1;
         }
         
-        slow_print("\n\n>> [SYSTEM] Character Ready: %s (Class: %s) | HP: %d | DMG: %d\n", 
-            current->name, current->role, current->hp, current->damage);
+        slow_print("\n\n>> [SYSTEM] Character Ready: %s | Role: %s | HP: %d | DMG: %d | Speed: %d |\n", 
+            current->name, current->role, current->hp, current->damage, current->speed);
         /*printf("\n--- Next character ---\n");*/
         
         /* Reset counters for next character */
@@ -175,7 +177,7 @@ speed_attr: T_SPEED EQUALS T_NUM SEMICOLON
 
 /* -------- PHASE 2 -------- */
 
-command: action SEMICOLON ;
+command: action SEMICOLON { YYACCEPT; } ;
 
 action: targeted
       | self
@@ -206,11 +208,11 @@ targeted:
             else {
                 int damage = current->damage;
 
-                printf("\n>> [SYSTEM] %s uses ATTACK on %s", current->name, opponent->name);
+                slow_print("\n>> [SYSTEM] %s uses ATTACK on %s", current->name, opponent->name);
 
                 if (opponent->defending == 1) {
                     damage = damage * 0.5;
-                    slow_print("\n>> [NARRATOR] Defense is key! This attack only deals 50%% (%d, in case you are not good at math ;)", damage);  
+                    slow_print("\n>> [NARRATOR] Defense is key! This attack only deals 50%% (%d, in case you are not good at math ;)", damage); 
 
                 } else if (opponent->defending == 2) {
                     damage = damage * 0.25;
@@ -220,11 +222,10 @@ targeted:
 
                 opponent->hp -= damage;
                 if (opponent->hp < 0) opponent->hp = 0; 
-
-                printf("\n>> [SYSTEM] %s dealt %d damage to %s", current->name, damage, opponent->name);
-                printf("\n>> [SYSTEM] %s has %d HP left", opponent->name, opponent->hp);
-
                 current->defending = 0; 
+
+                slow_print("\n>> [SYSTEM] %s dealt %d damage to %s", current->name, damage, opponent->name);
+                slow_print("\n>> [SYSTEM] %s has %d HP left", opponent->name, opponent->hp);
 
                 if (opponent->hp == 0) {
                     slow_print("\n\n>> [VICTORY] %s has been defeated! %s wins!\n", opponent->name, current->name);
@@ -241,7 +242,7 @@ targeted:
                 } else {
                      current = opponent; 
                      printf("\n\n--------------------------------------------------");
-                     printf("\n[SYSTEM] It is now %s's turn", current->name);
+                     slow_print("\n>> [SYSTEM] It is now %s's turn", current->name);
 
                     if(current->cooldown > 0) current->cooldown -= 1;
                     if(current->cooldown == 0) slow_print("\n>> [SYSTEM] %s, your ability is ready!", current->name);
@@ -270,7 +271,7 @@ targeted:
                     slow_print("\n>> [SYSTEM] Wait! %s made a mistake!", current->name);
                     opponent->hp = 0;     
 
-                } else if (opponent->hp <= 0) 
+                } else if (opponent->hp <= 0)  /* necessary?? */
                     slow_print("\n>> [SYSTEM-ERROR] Stop! %s is already dead!", opponent->name);
 
                 /* --- */
@@ -288,7 +289,7 @@ targeted:
                         slow_print("\n>> [NARRATOR] Lucky bastards... Pitty for you %s you damage is reduced by 25%%", current->name);
                         slow_print("\n>> [NARRATOR] In case you are poor, it is %d", damage);
                     }
-                    current->cooldown = 2;
+                    current->cooldown = 4;
 
                 } else if(strcmp(role, "knight")==0 && cooldown == 0){
                     slow_print("\n>> [SYSTEM] %s uses SLASH on %s", current->name, opponent->name);
@@ -304,7 +305,7 @@ targeted:
                         slow_print("\n>> [NARRATOR] Come on, it is not hard to calculate" 
                                     "\n>> [NARRATOR] WOW, ok, it is %d (wow.)", damage);
                     }
-                    current->cooldown = 3;
+                    current->cooldown = 6;
 
                 } else if (strcmp(role, "thief")==0 && cooldown == 0){
                     slow_print("\n>> [SYSTEM] %s STEALS from %s", current->name, opponent->name);
@@ -355,24 +356,22 @@ targeted:
                         if(opponent->defending > 0)
                             slow_print("\n>> [NARRATOR] Sorry pal (not really), defense is not useful against this attack...sucks to be you");
                     } 
-
                     current->cooldown = -1;
 
                 } else {
                     continues = 1;
-
-                    printf("[SYSTEM-ERROR] You are under cooldown, you cannot use your ability");
+                    slow_print("[SYSTEM-ERROR] You are under cooldown, you cannot use your ability");
                 }
 
                 if(continues == 0){
                     opponent->hp -= damage;
+                    if (opponent->hp < 0) opponent->hp = 0; 
+                    current->defending = 0; 
 
                     if (opponent->hp < 0) opponent->hp = 0; 
 
-                    printf("\n>> [SYSTEM] %s dealt %d damage to %s", current->name, damage, opponent->name);
-                    printf("\n>> [SYSTEM] %s has %d HP left", opponent->name, opponent->hp);
-
-                    current->defending = 0; 
+                    slow_print("\n>> [SYSTEM] %s dealt %d damage to %s", current->name, damage, opponent->name);
+                    slow_print("\n>> [SYSTEM] %s has %d HP left", opponent->name, opponent->hp);
 
                     if (opponent->hp == 0) {
                         slow_print("\n\n>> [VICTORY] %s has been defeated! %s gets to life another day!\n", opponent->name, current->name);
@@ -389,7 +388,7 @@ targeted:
                     } else {
                         current = opponent; 
                         printf("\n\n--------------------------------------------------");
-                        printf("\n[SYSTEM] It is now %s's turn", current->name);
+                        slow_print("\n>> [SYSTEM] It is now %s's turn", current->name);
                     }
                 }
             }
@@ -400,18 +399,75 @@ targeted:
 self:
     | T_ID T_DEFENDS
         {
-            //implement
+            if (strcmp($1, current->name) != 0) 
+                slow_print("\n>> [SYTEM-ERROR] It is not %s's turn! Wait for %s to finish.\n", $1, current->name);
+            else {
+                Character* opponent = get_opponent($1);
+
+                slow_print("\n>> [SYSTEM] %s takes a defensive stance...", current->name);
+                slow_print("\n>> [SYSTEM] Rolling for Bonus Defense (needs 4+)...");
+                int roll = roll_dice(); 
+
+                if (roll >= 4) {
+                    current->defending = 2; 
+                    slow_print("\n>> [SUCCESS] Critical Block! Damage will be reduced by 75%% next turn!");
+                } else {
+                    current->defending = 1; 
+                    slow_print("\n>> [DEFENSE] Standard guard up. Damage reduced by 50%%.");
+                }
+                
+                if(current->cooldown > 0) current->cooldown -= 1;
+                if(current->cooldown == 0) slow_print("\n>> [SYSTEM] %s, your ability is ready!", current->name);
+
+                current = opponent; 
+                        printf("\n\n--------------------------------------------------");
+                        slow_print("\n>> [SYSTEM] It is now %s's turn", current->name);
+            }
         }
     | T_ID T_FLEES
-        {
-            //implement
+        {    
+            if (strcmp($1, current->name) != 0) 
+                slow_print("\n>> [SYSTEM-ERROR] It is not %s's turn! Wait for %s to finish.\n", $1, current->name);
+            else {
+                slow_print("\n>> [SYSTEM] %s looks around nervously, looking for an exit...", current->name);
+                
+                
+                int chance = current->speed * 4;
+                
+                if (chance > 90) chance = 90; 
+                if (chance < 10) chance = 10;
+
+                slow_print("\n>> [NARRATOR] Oh look! %s is trying to run away like a chicken!", current->name);
+                int escaped = play_escape_roulette(chance);
+
+                if (escaped) {
+                    slow_print("\n>> [NARRATOR] Unbelievable... They actually ran away.");
+                    slow_print("\n>> [SYSTEM] Creating 'Coward' achievement for %s...", current->name);
+                    slow_print("\n>> [SYSTEM] Battle ended due to abandonment.");
+                    exit(0); 
+                } 
+                else {
+                    slow_print("\n>> [NARRATOR] HAHAHA! Tripped over their own shoelaces!");
+                    slow_print("\n>> [SYSTEM] Escape failed. You lose your turn.");
+                    slow_print("\n>> [NARRATOR] That is what you get for being a chicken, you may never go back to your coop!");
+                    
+                    Character* opponent = get_opponent($1);
+                    current = opponent; 
+
+                    printf("\n\n--------------------------------------------------");
+                    printf("\n>> [SYSTEM] It is now %s's turn", current->name);
+
+                    if (current->cooldown > 0) current->cooldown -= 1;
+                    if (current->cooldown == 0) slow_print("\n>> [SYSTEM] %s, your ability is ready!", current->name);
+                }
+            }
         }
     | T_ID CHECKS T_STATUS
         {
             if (strcmp($1, current->name) != 0) 
                 slow_print("\n>> [SYTEM-ERROR] It is not %s's turn! Wait for %s to finish.\n", $1, current->name);
             else {
-                Character* opponent = get_char($1);
+                Character* opponent = get_opponent($1);
 
                 printf("\n[Your stats]");
                 printf("\nName: %s", current->name);
@@ -441,7 +497,9 @@ self:
                 if(current->cooldown < 0) printf("Used (One time only)");
                 else if(current->cooldown == 0) printf("Ready");
                 else printf("%d", opponent->cooldown);
+                printf("\n");
 
+                slow_print("\n>> [SYSTEM] Analysis complete. It is still %s's turn to act.\n", current->name);
             }
         }
     ;
@@ -449,15 +507,15 @@ self:
 global:
     T_HELP
     {
-        slow_print("\n====================== RULES ======================"
+        printf("\n====================== RULES ======================"
                    "\nThe character with more speed begins the first attack"
                    "\nEvery character may use one action per round"
                    "\n\nEvery player can use the following commands:"
                    "\n\t -> ATTACK: "
-                   "\n\t\t - Syntax: character1 attacks character2"
+                   "\n\t\t - Syntax: character1 attacks character2;"
                    "\n\t\t - This lowers the enemy's HP."
                    "\n\t -> ABILITY: "
-                   "\n\t\t - Syntax: character1 uses ability on character2"
+                   "\n\t\t - Syntax: character1 uses ability on character2;"
                    "\n\t\t - The ability is based on the role:"
                    "\n\t\t\t * Mage: uses magic -> deals 150%% of their base damage."
                    "\n\t\t\t\t ** This ability has a cooldown of 2 turns."
@@ -465,22 +523,22 @@ global:
                    "\n\t\t\t\t ** This ability has a cooldown of 3 turns."
                    "\n\t\t\t * Thief: uses steal -> steals the weapon of its enemy, using its ability against them."
                    "\n\t\t\t\t ** This ability may be only used ONCE, think it through."
-                  );
-    slow_print("\n\t -> DEFENSE: "
-                   "\n\t\t - Syntax: character1 defends"
+                   "\n\t -> DEFENSE: "
+                   "\n\t\t - Syntax: character1 defends;"
                    "\n\t\t - This makes next attack the character receives be 50%% of the actual damage."
                    "\n\t\t - BONUS: a dice will be rolled, if the number is 4 or over, the round after it is also reduced 25%%!"
                    "\n\t -> FLEES: "
-                   "\n\t\t - Syntax: character1 flees"
+                   "\n\t\t - Syntax: character1 flees;"
                    "\n\t\t - This enters full gambling mode, here the speed is very important! A roulette will be turn to decide your fate."
                    "\n\t -> STATUS: "
-                   "\n\t\t - Syntax: character1 checks status"
+                   "\n\t\t - Syntax: character1 checks status;"
                    "\n\t\t - This will print the character's status and all of their stats."
                    "\n\t -> QUIT: "
-                   "\n\t\t - Syntax: quit"
+                   "\n\t\t - Syntax: quit;"
                    "\n\t\t - This options is used to quit the battle, but do not worry, only rats use this."
                    "\n\n Use the command help anytime if you want a refresh on the rules"
-                   "\n==================================================");
+                   "\n==================================================\n");
+        slow_print("\n>> [SYSTEM] Analysis complete. It is still %s's turn to act.", current->name);
     }
     | T_QUIT
     {
@@ -493,20 +551,6 @@ global:
 /* ------------------------ */
 
 %%
-
-/* --------- AUXs ---------- */
-
-Character* get_char(char* name) {
-    if (strcmp(player1.name, name) == 0) 
-        return &player1;
-    else if (strcmp(player2.name, name) == 0) 
-        return &player2;
-    
-    return NULL; 
-}
-
-/* ------------------------ */
-
 
 /* --- C CODE SECTION --- */
 
@@ -539,68 +583,105 @@ int main(int argc, char **argv) {
     yyparse(); 
     slow_print("\nCharacters loaded successfully.\n");
     slow_print("\n--- PHASE 1 COMPLETE ---\n");
+    printf("\n============================================\n");
 
 
+    char response;
     slow_print("\n--- PHASE 2: Combat ---\n");
     slow_print("\n>> [SYSTEM] Let's go over the rules!"
                "\n>> [NARRATOR] ZZZzzz "
                "\n>> [SYSTEM] Oh :("
-               "\n>> [SYSTEM] Player, you want to hear the rules, right?...\n");
+               "\n>> [SYSTEM] Player, you want to hear the rules, right?..."
+               "\n>> [y/n] ");
+    scanf("%c", &response);
 
-    /* IT DOES NOT PRINT EVERYTHING CORRECTLY -> DO IT IN SEPARATE SLOW_PRINTS */
-    slow_print("\n====================== RULES ======================"
-                   "\nThe character with more speed begins the first attack"
-                   "\nEvery character may use one action per round"
-                   "\n\nEvery player can use the following commands:"
-                   "\n\t -> ATTACK: "
-                   "\n\t\t - Syntax: character1 attacks character2"
-                   "\n\t\t - This lowers the enemy's HP."
-                   "\n\t -> ABILITY: "
-                   "\n\t\t - Syntax: character1 uses ability on character2"
-                   "\n\t\t - The ability is based on the role:"
-                   "\n\t\t\t * Mage: uses magic -> deals 150%% of their base damage."
-                   "\n\t\t\t\t ** This ability has a cooldown of 2 turns."
-                   "\n\t\t\t * Knight: uses slash -> deals 200%% of their base damage."
-                   "\n\t\t\t\t ** This ability has a cooldown of 3 turns."
-                   "\n\t\t\t * Thief: uses steal -> steals the weapon of its enemy, using its ability against them."
-                   "\n\t\t\t\t ** This ability may be only used ONCE, think it through."
-                  );
-    slow_print("\n\t -> DEFENSE: "
-                   "\n\t\t - Syntax: character1 defends"
-                   "\n\t\t - This makes next attack the character receives be 50%% of the actual damage."
-                   "\n\t\t - BONUS: a dice will be rolled, if the number is 4 or over, the round after it is also reduced 25%%!"
-                   "\n\t -> FLEES: "
-                   "\n\t\t - Syntax: character1 flees"
-                   "\n\t\t - This enters full gambling mode, here the speed is very important! A roulette will be turn to decide your fate."
-                   "\n\t -> STATUS: "
-                   "\n\t\t - Syntax: character1 checks status"
-                   "\n\t\t - This will print the character's status and all of their stats."
-                   "\n\t -> QUIT: "
-                   "\n\t\t - Syntax: quit"
-                   "\n\t\t - This options is used to quit the battle, but do not worry, only rats use this."
-                   "\n\n Use the command help anytime if you want a refresh on the rules"
-                   "\n==================================================");
+    if(response == 'y' || response == 'Y'){
+        slow_print("\n>> [SYSTEM] :D Glad to hear that player!");
+        slow_print("\n>> [NARRATOR] zzzzZZZZzzzzz\n");
 
-    /* Commented out Phase 2 loop for testing */
-    /*
-    yyin = stdin;
-    yyrestart(yyin);
-    while(1) { ... } 
-
-    */
-
-    slow_print("\n--- PHASE 2: Combact ---\n");
+        slow_print("\n====================== RULES ======================"
+                    "\nThe character with more speed begins the first attack"
+                    "\nEvery character may use one action per round"
+                    "\n\nEvery player can use the following commands:"
+                    "\n\t -> ATTACK: "
+                    "\n\t\t - Syntax: character1 attacks character2;"
+                    "\n\t\t - This lowers the enemy's HP."
+                    "\n\t -> ABILITY: "
+                    "\n\t\t - Syntax: character1 uses ability on character2;"
+                    "\n\t\t - The ability is based on the role:"
+                    "\n\t\t\t * Mage: uses magic -> deals 150%% of their base damage."
+                    "\n\t\t\t\t ** This ability has a cooldown of 2 turns."
+                    "\n\t\t\t * Knight: uses slash -> deals 200%% of their base damage."
+                    "\n\t\t\t\t ** This ability has a cooldown of 3 turns."
+                    "\n\t\t\t * Thief: uses steal -> steals the weapon of its enemy, using its ability against them."
+                    "\n\t\t\t\t ** This ability may be only used ONCE, think it through."
+                    );
+        slow_print("\n\t -> DEFENSE: "
+                    "\n\t\t - Syntax: character1 defends;"
+                    "\n\t\t - This makes next attack the character receives be 50%% of the actual damage."
+                    "\n\t\t - BONUS: a dice will be rolled, if the number is 4 or over, the round after it is also reduced 25%%!"
+                    "\n\t -> FLEES: "
+                    "\n\t\t - Syntax: character1 flees;"
+                    "\n\t\t - This enters full gambling mode, here the speed is very important! A roulette will be turn to decide your fate."
+                    "\n\t -> STATUS: "
+                    "\n\t\t - Syntax: character1 checks status;"
+                    "\n\t\t - This will print the character's status and all of their stats."
+                    "\n\t -> QUIT: "
+                    "\n\t\t - Syntax: quit;"
+                    "\n\t\t - This options is used to quit the battle, but do not worry, only rats use this."
+                    "\n\n Use the command help anytime if you want a refresh on the rules");
+        printf("\n==================================================\n");
+    } else {
+        slow_print(">> [NARRATOR] Boring... Let's jump straight to violence then");
+        slow_print("\n>> [SYSTEM] Skipping tutorial :(... I love rules...\n");
+    }
     
-    if(player1.speed > player2.speed)
-        current = &player1;
-    else
-        current = &player2;
+    if(player1.speed >= player2.speed) current = &player1;
+    else current = &player2;
+
+    slow_print("\n>> [SYSTEM] Speed calculation complete. %s is faster!", current->name);
+    slow_print("\n>> [SYSTEM] May %s begin and may the odds be ever in your favor", current->name);
+    slow_print("\n>> [NARRATOR] No more Hunger Games quotes please System");
+    slow_print("\n>> [SYSTEM] :(");
+
+    yyin = stdin;       
+    yyrestart(yyin);   
+
+    while(1) {
+        printf("\n\n-[%s]-> ", current->name); 
+        fflush(stdout);
+        
+        if (yyparse() != 0) 
+            yyrestart(yyin);
+    }
     
     return 0;
 }
 
+
+/* --------- AUXs ---------- */
+
+Character* get_char(char* name) {
+    if (strcmp(player1.name, name) == 0) 
+        return &player1;
+    else if (strcmp(player2.name, name) == 0) 
+        return &player2;
+    
+    return NULL; 
+}
+
+Character* get_opponent(char* name){
+    if (strcmp(player1.name, name) == 0) 
+        return &player2;
+    else if (strcmp(player2.name, name) == 0) 
+        return &player1;
+    
+    return NULL; 
+}
+
 void yyerror(const char *s) {
     fprintf(stderr, "Error: %s\n", s);
+    printf("Try again.");
 }
 
 void slow_print(const char *format, ...) {
@@ -624,10 +705,12 @@ void slow_print(const char *format, ...) {
 int play_escape_roulette(int success_chance) {
     const char spin_chars[] = {'|', '/', '-', '\\'}; 
     int final_roll = rand() % 100; 
+    
+    /* Nota: Si el chance es 90%, sacar un 89 es éxito. */
     int is_success = (final_roll < success_chance);
     
-    int loops = 25; 
-    int delay = 30000; 
+    int loops = 30;     /* Un poco más largo para más tensión */
+    int delay = 20000; 
 
     printf("\n"); 
 
@@ -635,96 +718,68 @@ int play_escape_roulette(int success_chance) {
         int visual_number = rand() % 100; 
         char spinner = spin_chars[i % 4];
 
-        printf("\r>> [ESCAPING] Speed Check: [%c] %3d%% required vs %3d%% rolled...", 
+        printf("\r\033[33m>> [ROULETTE] %c \033[0mSpeed Check: \033[36m%3d%%\033[0m needed | Rolling... \033[35m%3d%%\033[0m", 
                spinner, success_chance, visual_number);
         
         fflush(stdout); 
         usleep(delay);
-        delay += (i * 2000); 
+        
+        if (i > 20) delay += 50000;
+        else delay += (i * 2000); 
     }
 
     if (is_success) {
-        printf("\r>> [ESCAPING] Speed Check: [OK] %3d%% required vs %3d%% rolled... SUCCESS!\n", 
+        printf("\r\033[1;32m>> [ESCAPE] ✔ Speed Check: %3d%% needed | Rolled: %3d%% -> ESCAPED! \033[0m\n", 
                success_chance, final_roll);
     } else {
-        printf("\r>> [ESCAPING] Speed Check: [XX] %3d%% required vs %3d%% rolled... FAILED! \n", 
+        printf("\r\033[1;31m>> [ESCAPE] ✘ Speed Check: %3d%% needed | Rolled: %3d%% -> FAILED!  \033[0m\n", 
                success_chance, final_roll);
     }
     
-    // Pausa dramática final
     usleep(500000); 
     
     return is_success;
 }
 
-/*
-void handle_flee(char* name) {
-    Character* c = get_char(name);
-    
-    int chance = c->speed * 5; 
-    if (chance > 90) chance = 90; 
-    if (chance < 10) chance = 10;
-
-    slow_print("\n>> [ACTION] %s attempts to flee from battle!", c->name);
-    slow_print("\n>> [NARRATOR] Can those cowardly legs run fast enough?\n");
-
-    // LLAMADA A LA RULETA
-    int escaped = play_escape_roulette(chance);
-
-    if (escaped) {
-        slow_print("\n>> [NARRATOR] Look at them go! Like a dust cloud in the wind.\n");
-        slow_print(">> [RESULT] %s escaped successfully. Battle ends.\n", c->name);
-        exit(0);
-    } else {
-        slow_print("\n>> [NARRATOR] Tripped over their own shoelaces. Pathetic.\n");
-        slow_print(">> [RESULT] Escape failed! The battle continues.\n");
-        
-        // Opcional: Penalización por fallar
-        // c->hp -= 10;
-        // printf(">> [PENALTY] Took 10 damage while tripping.\n");
-    }
-}
-    */
-
-/* DADO -> tamvién internet lol */
 int roll_dice() {
+    const char* faces[] = { "?", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅" }; 
+    
     int final_val = (rand() % 6) + 1; 
-    int loops = 20;                   
+    int loops = 25;                   
     int delay = 20000;               
 
-    printf("\n");
+    printf("\n"); 
 
     for (int i = 0; i < loops; i++) {
         int visual_val = (rand() % 6) + 1;
         
-        printf("\r>> [DICE] Rolling... [ %d ]", visual_val);
+        printf("\r\033[36m>> [DICE] Rolling... %s  [ %d ]\033[0m", faces[visual_val], visual_val);
         
         fflush(stdout); 
         usleep(delay);
         
         if (i > 15) delay += 40000; 
-        else delay += 2000;
+        else delay += 3000;
     }
 
-    printf("\r>> [DICE] Rolling... [ %d ] -> RESULT!\n", final_val);
+    printf("\r\033[1;32m>> [DICE] Rolling... %s  -> RESULT: %d!   \033[0m\n", faces[final_val], final_val);
     
     usleep(300000); 
     
     return final_val;
-
-    /* MODO DE IMPRESIÓN PRO
-    char* faces[] = {"?", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"}; 
-
-    for (int i = 0; i < loops; i++) {
-        int v = (rand() % 6) + 1;
-        printf("\r>> [DICE] Rolling... %s ", faces[v]); 
-        fflush(stdout);
-        usleep(delay);
-        // ... aumento de delay ...
-    }
-    printf("\r>> [DICE] Rolling... %s  (%d)!\n", faces[final_val], final_val);*/
 }
 
 Character* current_char() {
     return (char_count == 0) ? &player1 : &player2;
 }
+
+/*
+        NOTES:
+        - cambiar las frases del ranom
+        - hacer que se pueda morir si se ataca a sí mismo (maybe dice roll)
+        - investigar cómo funciona el dice roll
+        - añadir pasivas?
+        - que puedas poner attacks o ATTACKS -> not case sensitive
+        - hacer más texto de colores?
+
+*/

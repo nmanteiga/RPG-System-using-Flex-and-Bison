@@ -37,17 +37,17 @@
     /* --------------------------------- */
 
 [0-9]+                                   { yylval.intValue = atoi(yytext); return T_NUM; } 
-[a-zA-ZáéíóúÁÉÍÓÚ][a-zA-ZáéíóúÁÉÍÓÚ0-9]* { yylval.strValue = strdup(yytext); return T_ID; } 
-
+[a-zA-Z_?¿¡!ñÑáéíóúÁÉÍÓÚ-][a-zA-Z0-9_?¿¡!ñÑáéíóúÁÉÍÓÚ-]* { yylval.strValue = strdup(yytext); return T_ID; }
 
 \"[^\"]*\"      { 
-                  /* Saltamos las comillas al guardar */
                   yylval.strValue = strdup(yytext + 1); 
                   yylval.strValue[strlen(yylval.strValue)-1] = 0;
                   return T_STRING; 
                 }
 
 [ \t\n]         { /* ignore whitespace */ }
-.               { printf("Unexpected token: %s\n", yytext); }
+.               { printf("Unexpected token: %s\n", yytext); 
+                  printf("============================================");
+                  exit(0);}
 
 %%
