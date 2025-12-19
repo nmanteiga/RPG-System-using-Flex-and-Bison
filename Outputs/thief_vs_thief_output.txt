@@ -1,0 +1,103 @@
+make run2 TEST=Inputs/thief_vs_thief.txt
+------ Executing specific input -----
+
+>> [SYSTEM] Loading provided file: Inputs/thief_vs_thief.txt
+
+============================================
+Jumping directly on the battle field
+
+--- PHASE 2: Combat (Script Execution) ---
+
+>> [SYSTEM] Speed calculation complete. thief1 is faster!
+>> [SYSTEM] thief1 begins and may the odds be ever in your favor
+>> [NARRATOR] No more Hunger Games quotes please System
+>> [SYSTEM] :(
+
+-[thief1]-> 
+>> [SYSTEM] thief1 takes a defensive stance...
+>> [SYSTEM] Rolling for Bonus Defense (needs 4+)...
+
+[36m>> [DICE] Rolling... ⚀  [ 1 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚄  [ 5 ][0m
+[36m>> [DICE] Rolling... ⚀  [ 1 ][0m
+[36m>> [DICE] Rolling... ⚁  [ 2 ][0m
+[36m>> [DICE] Rolling... ⚄  [ 5 ][0m
+[36m>> [DICE] Rolling... ⚁  [ 2 ][0m
+[36m>> [DICE] Rolling... ⚁  [ 2 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[36m>> [DICE] Rolling... ⚀  [ 1 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[36m>> [DICE] Rolling... ⚀  [ 1 ][0m
+[36m>> [DICE] Rolling... ⚃  [ 4 ][0m
+[36m>> [DICE] Rolling... ⚁  [ 2 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚀  [ 1 ][0m
+[36m>> [DICE] Rolling... ⚀  [ 1 ][0m
+[36m>> [DICE] Rolling... ⚃  [ 4 ][0m
+[36m>> [DICE] Rolling... ⚃  [ 4 ][0m
+[36m>> [DICE] Rolling... ⚁  [ 2 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚃  [ 4 ][0m
+[1;32m>> [DICE] Rolling... ⚅  -> RESULT: 6!   [0m
+
+>> [SUCCESS] ✔ Critical Block! Damage will be reduced by 75% next turn!
+>> [SYSTEM] thief1, your ability is ready!
+
+--------------------------------------------------
+>> [SYSTEM] It is now thief2's turn
+
+-[thief2]-> 
+>> [SYSTEM] thief2 STEALS from thief1
+>> [NARRATOR] This is a tricky battle, a thief cannot steal from another thief
+>> [NARRATOR] That is basic thief code
+>> [SYSTEM] It is? I though thiefs did not have codes
+>> [NARRATOR] ... System, I beg of you, do not embarasse me like that again...
+>> [NARRATOR] Anyhow, everyone knows there are no codes for back-stabbing, hihi
+>> [SYSTEM] Wow, thief2 back-stabs thief1
+>> [NARRATOR] Sorry pal (not really), defense is not useful against this attack...sucks to be you
+>> [SYSTEM] thief2 dealt 400 damage to thief1
+>> [SYSTEM] thief1 has 350 HP left
+
+--------------------------------------------------
+>> [SYSTEM] It is now thief1's turn
+
+-[thief1]-> 
+[thief1]
+Role: thief
+HP: 350
+Damage: 200
+Speed: 25
+Is defending? Yes
+How many turns for your ability? Ready
+
+[thief2]
+Role: thief
+HP: 750
+Damage: 200
+Speed: 20
+Is defending? No
+How many turns for your ability? Ready
+
+>> [SYSTEM] Analysis complete. It is still thief1's turn to act
+
+-[thief1]-> 
+>> [SYSTEM-ERROR] It is not thief2's turn! Wait for thief1 to finish.
+
+
+-[thief1]-> Error: syntax error
+Try using the help command
+
+>> [SYSTEM] End of script file reached.
+>> [SYSTEM] Switching to MANUAL CONTROL. Fight for your life!
+
+
+-[thief1]-> quit;
+
+>> [NARRATOR] You coward! You shall never come ba...*glitches*
+>> ... [SYSTEM] The simulation ends.
+
+============================================

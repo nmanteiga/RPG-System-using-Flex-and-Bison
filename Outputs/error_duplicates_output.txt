@@ -1,0 +1,11 @@
+make run2 TEST=Inputs/error_duplicates.txt
+------ Executing specific input -----
+
+>> [SYSTEM] Loading provided file: Inputs/error_duplicates.txt
+
+============================================
+Jumping directly on the battle field
+
+>> [ERROR] Invalid declaration: Duplicate attributes found for cheater.
+
+============================================

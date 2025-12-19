@@ -1,0 +1,55 @@
+make run2 TEST=Inputs/warnings_test_output.txt
+------ Executing specific input -----
+
+>> [SYSTEM] Loading provided file: Inputs/warnings_test.txt
+
+============================================
+Jumping directly on the battle field
+
+--- PHASE 2: Combat (Script Execution) ---
+
+>> [SYSTEM] Speed calculation complete. confused_guy is faster!
+>> [SYSTEM] confused_guy begins and may the odds be ever in your favor
+>> [NARRATOR] No more Hunger Games quotes please System
+>> [SYSTEM] :(
+
+-[confused_guy]-> 
+>> [SYTEM-ERROR] It is not lazy_guy's turn! Wait for confused_guy to finish.
+
+
+-[confused_guy]-> 
+[confused_guy]
+Role: knight
+HP: 100
+Damage: 75
+Speed: 8
+Is defending? No
+How many turns for your ability? Ready
+
+[lazy_guy]
+Role: thief
+HP: 539
+Damage: 175
+Speed: 3
+Is defending? No
+How many turns for your ability? Ready
+
+>> [SYSTEM] Analysis complete. It is still confused_guy's turn to act
+
+-[confused_guy]-> 
+>> [SYSTEM-ERROR] It is not lazy_guy's turn! Wait for confused_guy to finish.
+
+
+-[confused_guy]-> Error: syntax error
+Try using the help command
+
+>> [SYSTEM] End of script file reached.
+>> [SYSTEM] Switching to MANUAL CONTROL. Fight for your life!
+
+
+-[confused_guy]-> quit;
+
+>> [NARRATOR] You coward! You shall never come ba...*glitches*
+>> ... [SYSTEM] The simulation ends.
+
+============================================

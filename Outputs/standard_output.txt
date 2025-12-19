@@ -1,0 +1,127 @@
+make run2 TEST=Inputs/standard.txt
+------ Executing specific input -----
+
+>> [SYSTEM] Loading provided file: Inputs/standard.txt
+
+============================================
+Jumping directly on the battle field
+
+--- PHASE 2: Combat (Script Execution) ---
+
+>> [SYSTEM] Speed calculation complete. heroe is faster!
+>> [SYSTEM] heroe begins and may the odds be ever in your favor
+>> [NARRATOR] No more Hunger Games quotes please System
+>> [SYSTEM] :(
+
+-[heroe]-> 
+>> [SYSTEM] heroe uses ATTACK on villano
+>> [SYSTEM] heroe dealt 50 damage to villano
+>> [SYSTEM] villano has 350 HP left
+
+--------------------------------------------------
+>> [SYSTEM] It is now villano's turn
+>> [SYSTEM] villano, your ability is ready!
+
+-[villano]-> 
+>> [SYSTEM] villano takes a defensive stance...
+>> [SYSTEM] Rolling for Bonus Defense (needs 4+)...
+
+[36m>> [DICE] Rolling... ⚀  [ 1 ][0m
+[36m>> [DICE] Rolling... ⚃  [ 4 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚀  [ 1 ][0m
+[36m>> [DICE] Rolling... ⚁  [ 2 ][0m
+[36m>> [DICE] Rolling... ⚀  [ 1 ][0m
+[36m>> [DICE] Rolling... ⚃  [ 4 ][0m
+[36m>> [DICE] Rolling... ⚄  [ 5 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[36m>> [DICE] Rolling... ⚁  [ 2 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[36m>> [DICE] Rolling... ⚁  [ 2 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚀  [ 1 ][0m
+[36m>> [DICE] Rolling... ⚄  [ 5 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚁  [ 2 ][0m
+[36m>> [DICE] Rolling... ⚁  [ 2 ][0m
+[36m>> [DICE] Rolling... ⚄  [ 5 ][0m
+[36m>> [DICE] Rolling... ⚁  [ 2 ][0m
+[1;32m>> [DICE] Rolling... ⚀  -> RESULT: 1!  
+
+>> [DEFENSE] Standard guard up. Damage reduced by 50%.
+>> [SYSTEM] villano, your ability is ready!
+
+--------------------------------------------------
+>> [SYSTEM] It is now heroe's turn
+
+-[heroe]-> 
+>> [SYSTEM] heroe uses SLASH on villano
+>> [NARRATOR] Shielding up, nice move I guess... This attack only deals 50% (For the uneducated bastards out there -> 50)
+>> [SYSTEM] heroe dealt 50 damage to villano
+>> [SYSTEM] villano has 300 HP left
+
+--------------------------------------------------
+>> [SYSTEM] It is now villano's turn
+
+-[villano]-> Error: syntax error
+Try using the help command
+
+>> [SYSTEM] End of script file reached.
+>> [SYSTEM] Switching to MANUAL CONTROL. Fight for your life!
+
+
+-[villano]-> villano flees;
+
+>> [SYSTEM] villano looks around nervously, looking for an exit...
+>> [NARRATOR] Oh look! villano is trying to run away like a chicken!
+
+[33m>> [ROULETTE] | [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 66%[0m
+[33m>> [ROULETTE] / [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 85%[0m
+[33m>> [ROULETTE] - [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 17%[0m
+[33m>> [ROULETTE] \ [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m  2%[0m
+[33m>> [ROULETTE] | [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 73%[0m
+[33m>> [ROULETTE] / [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 27%[0m
+[33m>> [ROULETTE] - [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 95%[0m
+[33m>> [ROULETTE] \ [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 87%[0m
+[33m>> [ROULETTE] | [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 48%[0m
+[33m>> [ROULETTE] / [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 10%[0m
+[33m>> [ROULETTE] - [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 56%[0m
+[33m>> [ROULETTE] \ [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 22%[0m
+[33m>> [ROULETTE] | [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 59%[0m
+[33m>> [ROULETTE] / [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 17%[0m
+[33m>> [ROULETTE] - [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 71%[0m
+[33m>> [ROULETTE] \ [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m  6%[0m
+[33m>> [ROULETTE] | [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 25%[0m
+[33m>> [ROULETTE] / [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 93%[0m
+[33m>> [ROULETTE] - [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 54%[0m
+[33m>> [ROULETTE] \ [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 62%[0m
+[33m>> [ROULETTE] | [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 73%[0m
+[33m>> [ROULETTE] / [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 91%[0m
+[33m>> [ROULETTE] - [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 89%[0m
+[33m>> [ROULETTE] \ [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 38%[0m
+[33m>> [ROULETTE] | [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 37%[0m
+[33m>> [ROULETTE] / [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 53%[0m
+[33m>> [ROULETTE] - [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 47%[0m
+[33m>> [ROULETTE] \ [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 26%[0m
+[33m>> [ROULETTE] | [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 82%[0m
+[33m>> [ROULETTE] / [0mSpeed Check: [36m 20%[0m needed | Rolling... [35m 53%[0m
+[1;31m>> [ESCAPE] ✘ Speed Check:  20% needed | Rolled:  48% -> FAILED!  [0m
+
+>> [NARRATOR] HAHAHA! Tripped over their own shoelaces!
+>> [SYSTEM] Escape failed. You lose your turn.
+>> [NARRATOR] That is what you get for being a chicken, you may never go back to your coop!
+
+--------------------------------------------------
+>> [SYSTEM] It is now heroe's turn
+
+-[heroe]-> quit;
+
+>> [NARRATOR] You coward! You shall never come ba...*glitches*
+>> ... [SYSTEM] The simulation ends.
+
+============================================

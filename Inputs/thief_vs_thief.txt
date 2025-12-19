@@ -1,0 +1,18 @@
+thief1 {
+    role = "thief";
+    hp = 750;
+    damage = 200;
+    speed = 25;
+}
+
+thief2 {
+    role = "thief";
+    hp = 750;
+    damage = 200;
+    speed = 20;
+}
+
+thief1 defends;
+thief2 uses ability on thief1;
+thief1 checks status;
+thief2 flees;

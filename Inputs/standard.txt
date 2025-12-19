@@ -1,0 +1,17 @@
+heroe {
+    role = "knight";
+    hp = 500;
+    damage = 50;
+    speed = 10;
+}
+
+villano {
+    role = "mage";
+    hp = 400;
+    damage = 60;
+    speed = 5;
+}
+
+heroe attacks villano;
+villano defends;
+heroe uses ability on villano;

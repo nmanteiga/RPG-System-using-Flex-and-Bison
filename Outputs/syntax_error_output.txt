@@ -1,0 +1,11 @@
+make run2 TEST=Inputs/syntax_error.txt
+------ Executing specific input -----
+
+>> [SYSTEM] Loading provided file: Inputs/syntax_error.txt
+
+============================================
+Jumping directly on the battle field
+Error: syntax error
+Try using the help command
+>> [FATAL ERROR] Error parsing characters. Exiting.
+make: *** [run2] Error 1

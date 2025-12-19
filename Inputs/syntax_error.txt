@@ -1,0 +1,13 @@
+mago_loco {
+    role = "mage";
+    hp = 500
+    damage = 50;
+    speed = 10;
+}
+
+otro_pj {
+    role = "knight";
+    hp = 500;
+    damage = 50;
+    speed = 5;
+}

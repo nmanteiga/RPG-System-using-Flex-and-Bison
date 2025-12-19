@@ -1,0 +1,49 @@
+make run2 TEST=Inputs/logic_abuses.txt
+------ Executing specific input -----
+
+>> [SYSTEM] Loading provided file: Inputs/logic_abuses.txt
+
+============================================
+Jumping directly on the battle field
+
+--- PHASE 2: Combat (Script Execution) ---
+
+>> [SYSTEM] Speed calculation complete. kamikaze is faster!
+>> [SYSTEM] kamikaze begins and may the odds be ever in your favor
+>> [NARRATOR] No more Hunger Games quotes please System
+>> [SYSTEM] :(
+
+-[kamikaze]-> 
+>> [NARRATOR] I see how it is, if you want to kill yourself just say so
+>> [SYSTEM] Wait! kamikaze made a mistake!
+>> [NARRATOR] If the dice gets fewer than a 5 you shall face your faith
+
+[36m>> [DICE] Rolling... ⚄  [ 5 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚁  [ 2 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[36m>> [DICE] Rolling... ⚀  [ 1 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚄  [ 5 ][0m
+[36m>> [DICE] Rolling... ⚄  [ 5 ][0m
+[36m>> [DICE] Rolling... ⚁  [ 2 ][0m
+[36m>> [DICE] Rolling... ⚁  [ 2 ][0m
+[36m>> [DICE] Rolling... ⚀  [ 1 ][0m
+[36m>> [DICE] Rolling... ⚃  [ 4 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[36m>> [DICE] Rolling... ⚀  [ 1 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚃  [ 4 ][0m
+[36m>> [DICE] Rolling... ⚀  [ 1 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚅  [ 6 ][0m
+[36m>> [DICE] Rolling... ⚄  [ 5 ][0m
+[36m>> [DICE] Rolling... ⚂  [ 3 ][0m
+[1;32m>> [DICE] Rolling... ⚁  -> RESULT: 2!   [0m
+
+>> [FAILURE] ✘ Oh, bye player
+============================================

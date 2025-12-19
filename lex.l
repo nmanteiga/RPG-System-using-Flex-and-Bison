@@ -11,7 +11,6 @@
 %%
 
     /* -------- PHASE 1 DEFINITIONS -------- */
-"character"     { return T_CHARACTER; } 
 "role"          { return T_ROLE; }    
 "hp"            { return T_HP; }      
 "damage"        { return T_DAMAGE; }  
@@ -28,11 +27,11 @@
 "flees"         { return T_FLEES; }
 "uses"          { return USES; }     
 "ability"       { return T_ABILITY; }
+"on"            { return ON; }
 "checks"        { return CHECKS; }   
 "status"        { return T_STATUS; }
 "help"          { return T_HELP; }
 "quit"          { return T_QUIT; }    
-"on"            { return ON; }
 
     /* --------------------------------- */
 
@@ -47,7 +46,7 @@
 
 [ \t\n]         { /* ignore whitespace */ }
 .               { printf("Unexpected token: %s\n", yytext); 
-                  printf("============================================");
-                  exit(0);}
+                  exit(0);
+                  }
 
 %%

@@ -1,0 +1,11 @@
+lazy_guy {
+    role = "thief";
+}
+
+confused_guy {
+    hp = 100;
+}
+
+lazy_guy checks status;
+confused_guy checks status;
+lazy_guy flees;

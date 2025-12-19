@@ -1,0 +1,19 @@
+kamikaze {
+    role = "knight";
+    hp = 800;
+    damage = 100;
+    speed = 20;
+}
+
+victim {
+    role = "mage";
+    hp = 800;
+    damage = 10;
+    speed = 5;
+}
+
+kamikaze attacks kamikaze;
+victim uses ability on ghost_player;
+kamikaze uses ability on victim;
+kamikaze uses ability on victim;
+kamikaze flees;

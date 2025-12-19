@@ -1,0 +1,172 @@
+----------------------------------------
+Autora: Naiara Manteiga Cendón
+Asignatura: Procesamiento de Lenguajes
+Curso: 2025/2026
+Práctica: Práctica Final - Juego y Analizador de Batallas RPG
+----------------------------------------
+ÍNDICE
+1.- Introducción
+    1.1- Fase 1
+    1.2- Fase 2
+2.- Estructura del Proyecto
+3.- Manual de Uso 
+4.- Análisis Léxico
+    4.1- Tokens de la fase 1
+    4.2- Tokens de la fase 2
+5.- Analizador Semántico
+    5.1- Gramática común
+    5.2- Gramática de la fase 1
+    5.3- Gramática de la fase 2
+6.- Explicación de Diseño 
+7.- Manejo de Errores y Problemas Resueltos
+8.- Pruebas Realizadas
+
+----------------------------------------
+
+1.- Introducción
+En este proyecto mi objetivo fue diseñar una gramática libre de contexto dividida en dos fases:
+    -> Fase 1: Analizador de Personajes 
+               En esta parte un archivo .txt es analizado y, si el propio documento sigue la estructura correcta, se procesan los (únicamente) dos personajes en memoria.
+               Para que la estructura se considere correcta se tienen en cuenta los siguientes puntos:
+                    - Cada bloque tiene que tener un nombre.
+                    - Cada bloque tiene que tener un símbolo de llave abierta y llave cerrada, con los argumentos dentro de estas.
+                    - Cada atributo tiene que terminar con un ;
+                    - Solo han de haber 2 personajes por batalla.
+               Otras consideraciones como no escribir algún atributo de la lista tiene una solución en el código -> se le asigna al personaje un valor aleatorio acotado (HP: del 1 al 1000 (con +50 para que no sea 0), daño: 1 al 200 (+10) y velocidad: 1 al 20 (+1)). 
+    -> Fase 2: Batalla 
+               En esta parte el usuario puede (1) escribir los comandos propios en el documento .txt, (2) usar la propia terminal para computar la batalla en tiempo real o (3) hacer una opción híbrida en la que el usuario puede escribir parte de los comandos en el documento y cuando estos terminen continuar en el modo en tiempo real.
+               Para que la estructura se considere correcta se tienen en cuenta los siguientes puntos:
+                    - Los comandos han de seguir la estrucutra determinada.
+                    - Si se elige poner comandos en el .txt estos tienen que ser después de la declaración de personajes (fase 1).
+Los propios errores que se han tenido en cuenta en el código para ambas fases será comentado en uno de los siguientes puntos.
+Todo el desarrollo del programa se intenta hacer con un diálogo cómico e informativo entre el sistema y el narrador por motivos de ambiente.
+
+2.- Estructura del Proyecto
+    -> lex.l: Analizador léxico. Identifica tokens como T_ATTACKS, identificadores, números, etc.
+    -> gram.y: Analizador sintáctico y semántico. Define la gramática y la lógica del juego en C.
+    -> rpg.h: Cabecera con la definición de la estructura Character (tabla de símbolos).
+    -> Makefile: Script de compilación automatizada.
+    -> Inputs/: carpeta con ejemplos dados.
+    -> Outputs/: carpeta con los scripts de los resultados de la compilación de los inputs.
+
+3.- Manual de Uso 
+    (1) make clean -> limpia la carpeta
+    (2) make compile -> compila el proyecto
+        (a) make run -> realiza ./rpg_game con el documento standard.txt
+        (b) make run2 TEST=Inputs/<nombre>.txt -> carga el juego con un .txt determinado
+
+4.- Análisis Léxico
+Listado de tokens para la fase 1 (declaración de personajes):
+    - T_ID: nombre del personaje.
+    - T_ROLE: detecta la keyword rol.
+    - T_HP: detecta la keyword hp.
+    - T_DAMAGE: detecta la keyword daño.
+    - T_SPEED: detecta la keyword velocidad.
+    - L_BRACE y R_BRACE: detecta "{" y "}", usado para dividir los dos bloques.
+    - EQUALS: detecta "=", usado para dar valores a los atributos.
+    - SEMICOLON: detecta ";", usado para serparar los atributos.
+    - T_STRING: captura el resultado escrito en role (sin comillas).
+    - T_NUM: captura el resultado numérico para los atributos.
+Se puede usar cualquier nombre para los personajes (con acentos, _, -, ¿? o ¡!) y cualquier valor numérico para los atributos, SIN EMBARGO, los roles solo serán uno de estos tres: "knight" (caballero), "mague" (mago) o "thief" (ladrón), si no se especifica se escogerá uno aleatorio.
+
+Listado de tokens para la fase 2 (batalla):
+    - T_ATTACKS: detecta el token para la acción de ataque ("attacks").
+    - T_DEFENDS: detecta el token para la acción de defender ("defends").
+    - T_ FLEES: detecta el token para la acción de huída ("flees").
+    - USES, T_ABILITY y ON: usado para la acción de usar habilidad en ("uses ability on").
+    - CHECKS y T_STATUS: mira las estadísticas de los personajes ("checks status");
+    - T_HELP: despliega el menú de ayuda con toda la información de las normas ("help").
+    - T_QUIT: sale del programa ("quit").
+
+El analizador léxico ignora los tabs o saltos de línea.
+
+5.- Analizador Semántico
+Gramática común:
+    ALL -> DOCUMENT | COMMAND
+        >> La ejecución empieza con un documento y comandos.
+
+Gramática para la fase 1:
+    DOCUMENT -> CHARACTER CHARACTER
+        >> Esto hace que solo puedan registrarse 2 únicos personajes 
+    CHARACTER -> t_id l_brace ATTRIBUTE_LIST r_brace
+        >> Un personaje se define por un nombre (id) y una lista de atributos entre llaves
+    ATTRIBUTE_LIST -> ATTRIBUTE_LIST | ATTRIBUTE
+        >> Esto permite que el usuario ponga un solo atributo, algunos o ninguno.
+    ATTRIBUTE: ROLE_ATTR | HP_ATTR | DAMAGE_ATTR | SPEED_ATTR
+        >> Esto permite que se puedan poner en un orden no específico, haciendo el programa más flexible.
+    ROLE_ATTR: t_role equals t_string semicolon 
+    HP_ATTR: t_hp equals t_num semicolon
+    DAMAGE_ATTR: t_damage t_num semicolon
+    SPEED_ATTR: t_speed t_num semicolon
+        >> Estos simplemente se encargan de, si se ecribe el argumento, que la estructura sea correcta 
+        >> No acepta una línea como hp=; simplemente porque, si el usuario quiere un valor aleatorio, simplemente no escribiría la línea antes que ponerla sin ningún argumento.
+
+Gramática para la fase 2:
+    COMMAND -> ACTION
+        >> El comando es una determinada acción.
+    ACTION -> TARGETED | SELF | GLOBAL
+        >> Por limpieza he categorizado las acciones en targeted (acción que requiere 2 personajes (ej.: atacar o usar habilidad)), self (acción que solo requiere un usuario (ej.: status, huír o defender)) y global (acciones como quit o help).
+    TARGETED: t_id t_attacks t_id semicolon
+              | t_id uses t_ability on t_id
+        >> Habilidades de ataque (2 targets).
+    SELF: t_id t_defends semicolon
+          | t_id checks t_status 
+          | t_id t_flees semicolon
+        >> Habilidades de un solo target.
+    GLOBAL: t_help semicolon
+            | t_quit semicolon
+        >> Habilidades sin target.
+
+6.- Explicación de Diseño 
+El programa tiene una serie de acciones espcíficas que resulta importante mencionar:
+    -> Se permite, al principio de la ejecución del programa, saltar la parte del analizador de personaje para saltar a la parte de la batalla. Esto no salta realmente esta parte, simplemente esconde los prints usando la variable silent_mode, que cambia de valor dependiendo de la respuesta del usuario. Se hace lo mismo para la redacción de las normas antes del comienzo de la batalla. 
+    -> El programa tiene roles (caballero, mago y ladrón), esto a la hora de jugar únicamente condiciona la habilidad siendo estas sus características:
+            - Caballero: lanza un "espadazo" que hace un 200% del daño base.
+                            >> Cooldown: esta habilidad solo se podrá usar cada 3 turnos.
+            - Mago: usa magia y su ataque hace un 150% de su daño base.
+                        >> Cooldown: esta habilidad solo se podrá usar cada 2 turnos.
+            - Ladrón: el ladrón le podrá robar el arma a su contrincante usando su habilidad especial. Para esto se tienen en cuenta uno escenarios determinados:
+                        (a) Si el daño base del contrincante es mayor que el del ladrón usará ese valor para el cálculo de la habilidad, si es el caso contrario, se usará el daño base del ladrón.
+                        (b) Si hay dos ladrones en el campo de batalla el ladrón usará una puñalada por la espalda como habilidad que hará un 300% del daño base.
+                        >> Cooldown: esta habilidad solo se podrá usar una vez en toda la batalla.
+    -> Para la defensa, si se usa esta acción esto hará que el siguiente ataque del oponente haga un 50% menos de daño. Sin embargo, también se lanzará un dado, si el valor del dado es 4 o más se bloqueará un 75% del daño, en vez de un 50%. A nivel de interfaz, se ha implementado una animación en ASCII que bloquea temporalmente la ejecución para dar suspense simular el dado, mejorando la experiencia de usuario y añadiendo incertidumbre al resultado del combate.
+    -> Para la huída, si el usuario quiere huír se girará una ruleta, el valor de la probabilidad de éxito es la velocidad * 4, acotando el resultado entre un 10% y un 90% para mantener el equilibrio del juego. A nivel de interfaz, se ha implementado una animación en ASCII que bloquea temporalmente la ejecución para simular el giro de la ruleta, mejorando la experiencia de usuario y añadiendo incertidumbre al resultado del combate.
+    
+7.- Manejo de Errores y Problemas Resueltos
+Errores léxico-sintácticos:
+    (a) Tokens desconocidos (lex.l): regla catch-all (.) al final del analizador léxico.
+    (b) yyerror para errores de sintaxis.
+
+Errores semánticos en la fase 1:
+    (c) Uso de contadores (role_cnt, hp_cnt, ...) para error de atributos duplicados.
+    (d) Manejo de atributos faltantes con las funciones randomizadas.
+
+Errores de lógica de juego:
+    (e) Validación de turnos, si no es tu turno imprime "[SYSTEM-ERROR] It is not %s's turn!" y repite la acción del turno.
+    (f) Objetivo inexistente, este error se da si usas una target action (atacar o usar abilidad) sin poner el id del contrincante,
+        da un mensaje de error "[SYSTEM-ERROR] You are attacking a ghost? %s does not exist.". Consideré que era mejor dejarlo así 
+        a poner un modo de detección automática de oponente (ya que los combates son 1vs1), ya que de esta forma es más fácil 
+        escalarlo si en un futuro se permite más de un oponente en la pelea.
+    (g) Cuando te intentas atacar o usar una habilidad a ti mismo, entra en modo "suicidio", el narrador tira el dado que decide 
+        tu destino, si deber morir o no.
+    (h) Cooldown de habilidades para evitar abusos del usuario.
+
+Errores de sistema y ejecución del main:
+    (i) Falta de archivo input, si detecta esto usa el predeterminado (standard.txt).
+    (j) perror si hay fallo al abrir el input.
+    (k) Uso de yyparse() != 0 en el cambio de flujo (de lectura a manipulación en terminal) para evitar bucles infinitos.
+    (l) Uso de free_characters() para liberación de memoria.
+
+8.- Pruebas Realizadas
+Las pruebas están recogidas en las carpetas Inputs/ y Outputs/:
+    Inputs/
+        |_ error_duplicate.txt -> ejemplo de error de atributo duplicado.
+        |_ logic_abuses.txt -> ejemplo de un usuario intentando "colarse" y poniendo su id primero, intentando atacarse a sí mismo 
+        |                      o usar su habilidad fuera de cooldown.
+        |_ standard.txt -> ejemplo de una batalla normal entre un mago y un caballero, sin valores aleatorios.
+        |_ syntax_error.txt -> se declara un atributo sin ; al final.
+        |_ thief_vs_thief.txt -> una batalla entre ladrones, para ver los diálogos de las habilidades cambiadas.
+        |_ warnings_test.txt -> prueba la lógica de los datos random si no se declaran.
+
+Todos los outputs se han registrado usando script en la terminal y están guardados en la carpeta Outputs, con el mismo nombre que el archivo original seguido de _output. Si se desean probar se puede usar la función make run2 para ello:
+    >> make run2 TEST="Inputs/standard.txt"

@@ -1,0 +1,14 @@
+cheater {
+    role = "mage";
+    hp = 100;
+    hp = 9999; 
+    damage = 50;
+    speed = 10;
+}
+
+victim {
+    role = "knight";
+    hp = 100;
+    damage = 10;
+    speed = 10;
+}
